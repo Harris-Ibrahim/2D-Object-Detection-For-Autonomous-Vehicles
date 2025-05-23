@@ -1,0 +1,7 @@
+# ignore all files with the data directory
+data/*
+
+# ignore cache files
+__pycache__
+configuration.env
+tensorboard_logs
