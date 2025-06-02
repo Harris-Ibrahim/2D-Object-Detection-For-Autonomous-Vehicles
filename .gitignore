@@ -5,3 +5,6 @@ data/*
 __pycache__
 configuration.env
 tensorboard_logs
+PASCAL_VOC/*
+checkpoint1.pth.tar
+checkpoint2.pth.tar
