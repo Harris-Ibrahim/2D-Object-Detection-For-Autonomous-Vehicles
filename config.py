@@ -96,6 +96,14 @@ test_transforms = A.Compose(
     bbox_params=A.BboxParams(format="yolo", min_visibility=0.4, label_fields=[]),
 )
 
+
+KITTI_CLASSES = [
+    "Pedestrian",
+    "Cyclist",
+    "Van",
+    "Truck",
+]
+
 PASCAL_CLASSES = [
     "aeroplane",
     "bicycle",
