@@ -7,6 +7,6 @@ configuration.env
 tensorboard_logs
 PASCAL_VOC/*
 KITTI/*
-
+KITTI_YOLO/*
 checkpoint1.pth.tar
 checkpoint2.pth.tar
