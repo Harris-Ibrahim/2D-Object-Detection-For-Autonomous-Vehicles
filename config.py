@@ -5,13 +5,13 @@ import torch
 from albumentations.pytorch import ToTensorV2
 from utils import seed_everything
 
-DATASET = 'PASCAL_VOC'
+DATASET = 'KITTI_YOLO'
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 # seed_everything()  # If you want deterministic behavior
 NUM_WORKERS = 4
 BATCH_SIZE = 32
 IMAGE_SIZE = 416
-NUM_CLASSES = 20
+NUM_CLASSES = 1
 LEARNING_RATE = 3e-5
 WEIGHT_DECAY = 1e-4
 NUM_EPOCHS = 100
@@ -81,7 +81,7 @@ train_transforms = A.Compose(
         A.Normalize(mean=[0, 0, 0], std=[1, 1, 1], max_pixel_value=255,),
         ToTensorV2(),
         ],
-bbox_params=A.BboxParams(format="yolo", min_visibility=0.4, label_fields=[],)
+    bbox_params=A.BboxParams(format="yolo", min_visibility=0.4, label_fields=[], check_each_transform=False)
 )
 
 test_transforms = A.Compose(
@@ -93,15 +93,12 @@ test_transforms = A.Compose(
         A.Normalize(mean=[0, 0, 0], std=[1, 1, 1], max_pixel_value=255,),
         ToTensorV2(),
     ],
-    bbox_params=A.BboxParams(format="yolo", min_visibility=0.4, label_fields=[]),
+    bbox_params=A.BboxParams(format="yolo", min_visibility=0.4, label_fields=[], check_each_transform=False),
 )
 
 
 KITTI_CLASSES = [
-    "Pedestrian",
-    "Cyclist",
-    "Van",
-    "Truck",
+    "car",
 ]
 
 PASCAL_CLASSES = [
