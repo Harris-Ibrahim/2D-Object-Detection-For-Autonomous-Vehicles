@@ -7,7 +7,7 @@ import numpy as np
 from tqdm.notebook import tqdm
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-# %matplotlib inline
+# %matplotlib notebook
 import torch
 import os
 from PIL import Image
@@ -21,8 +21,8 @@ def print_image_orignal (image_number, x_train, y_train):
 
     # Get boxes & classes for specific image
     im_number = image_number
-    boxes = y_train[im_number]["boxes"]
-    classes = y_train[im_number]["classes"]
+    boxes = y_train["boxes"]
+    classes = y_train["classes"]
     print(x_train.dtype)
 
     # Plot image
@@ -43,6 +43,9 @@ def print_image_orignal (image_number, x_train, y_train):
         width = bbox[3] - bbox[1]
         rect = patches.Rectangle((bbox[1], bbox[0]), width, height, linewidth=1, edgecolor=cl, facecolor="none")
         ax.add_patch(rect)
+
+    plt.show()
+    plt.close(fig)
 
         # plt.text(
         #     bbox[1],
