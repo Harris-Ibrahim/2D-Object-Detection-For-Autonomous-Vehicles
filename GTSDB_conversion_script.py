@@ -1,1 +1,0 @@
-# Convert the format of the GTSDB to the one support by our code.
