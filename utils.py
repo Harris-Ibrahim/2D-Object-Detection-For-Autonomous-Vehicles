@@ -123,7 +123,7 @@ def non_max_suppression(bboxes, iou_threshold, threshold, box_format="corners"):
 
 def mean_average_precision(
     pred_boxes, true_boxes, iou_threshold=0.5, box_format="midpoint", num_classes=20
-):
+    ):
     """
     Video explanation of this function:
     https://youtu.be/FppOzcDvaDI
@@ -232,10 +232,10 @@ def mean_average_precision(
     return sum(average_precisions) / len(average_precisions)
 
 
-def plot_image(image, boxes):
+def plot_image(image, boxes, class_labels_list):
     """Plots predicted bounding boxes on the image"""
     cmap = plt.get_cmap("tab20b")
-    class_labels = config.COCO_LABELS if config.DATASET=='COCO' else config.PASCAL_CLASSES
+    class_labels = class_labels_list
     colors = [cmap(i) for i in np.linspace(0, 1, len(class_labels))]
     im = np.array(image)
     height, width, _ = im.shape
