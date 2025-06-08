@@ -500,7 +500,7 @@ def get_loaders(train_csv_path, test_csv_path):
 
     return train_loader, test_loader, train_eval_loader
 
-def plot_couple_examples(model, loader, thresh, iou_thresh, anchors):
+def plot_couple_examples(model, loader, thresh, iou_thresh, anchors, class_labels_list):
     model.eval()
     x, y = next(iter(loader))
     x = x.to("cuda")
@@ -522,7 +522,7 @@ def plot_couple_examples(model, loader, thresh, iou_thresh, anchors):
         nms_boxes = non_max_suppression(
             bboxes[i], iou_threshold=iou_thresh, threshold=thresh, box_format="midpoint",
         )
-        plot_image(x[i].permute(1,2,0).detach().cpu(), nms_boxes)
+        plot_image(x[i].permute(1,2,0).detach().cpu(), nms_boxes, class_labels_list)
 
 
 
