@@ -9,10 +9,11 @@ DATASET = 'KITTI_YOLO'
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 # seed_everything()  # If you want deterministic behavior
 NUM_WORKERS = 4
-BATCH_SIZE = 32
-IMAGE_SIZE = 416
+BATCH_SIZE = 40
+# IMAGE_SIZE = 416
+IMAGE_SIZE = 608
 NUM_CLASSES = 1
-LEARNING_RATE = 3e-5
+LEARNING_RATE = 4e-5
 WEIGHT_DECAY = 1e-4
 NUM_EPOCHS = 100
 CONF_THRESHOLD = 0.6
@@ -22,7 +23,7 @@ S = [IMAGE_SIZE // 32, IMAGE_SIZE // 16, IMAGE_SIZE // 8]
 PIN_MEMORY = True
 LOAD_MODEL = True
 SAVE_MODEL = True
-CHECKPOINT_FILE = "checkpoint1.pth.tar"
+CHECKPOINT_FILE = "checkpointv2.pth.tar"
 IMG_DIR = DATASET + "/images/"
 LABEL_DIR = DATASET + "/labels/"
 
