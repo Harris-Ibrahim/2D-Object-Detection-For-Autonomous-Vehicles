@@ -10,6 +10,8 @@ from collections import Counter
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
+from collections import defaultdict
+
 
 def iou_width_height(boxes1, boxes2):
     """
@@ -524,6 +526,47 @@ def plot_couple_examples(model, loader, thresh, iou_thresh, anchors, class_label
         )
         plot_image(x[i].permute(1,2,0).detach().cpu(), nms_boxes, class_labels_list)
 
+
+def convert_YOLO_pred_to_orignal_format (preds_yolo_format):
+    """
+    Convert predictions from format [Number of boxes, 7] where each row is:
+    [image_number, class_idx, objectness_score, x_center, y_center, box_width, box_height]
+    to a dictionary grouped by image_number_1:
+    {
+        image_number_1: {
+            "classes": [class_idx_1, class_idx_2, ...],
+            "scores": [score1, scores_2, ...],
+            "boxes": [[xmin, ymin, xmax, ymax], ...]
+        },
+        ...
+    }
+    """
+    result = defaultdict(lambda: {"classes": [], "scores": [], "boxes": []})
+
+    # Iterate through the predictions array of shape (predicted boxes, 07)
+    for pred in preds_yolo_format:
+        image_idx, class_idx, objectness, x_centre, y_centre, width, height = pred
+
+        # Convert from YOLO format to orignal provided format
+        # Also switch the width dimension with height dimension 
+        xmin = y_centre - height / 2
+        ymin = x_centre - width / 2
+
+        xmax = y_centre + height / 2
+        ymax = x_centre + width / 2
+
+        # Store the results in a dictionary at index image_idx of a list
+        result[int(image_idx)]["classes"].append(int(class_idx))
+        result[int(image_idx)]["scores"].append(float(objectness))
+        result[int(image_idx)]["boxes"].append([xmin, ymin, xmax, ymax])
+
+    # This converts defaultdict to a regular dict and list in image order. 
+    # This assumes that images can be in wrong orders in predictions 
+    max_image_id = max(result.keys())
+    output = [result[i] if i in result else {"classes": [], "scores": [], "boxes": []}
+                for i in range(max_image_id + 1)]
+    
+    return output
 
 
 def seed_everything(seed=42):
