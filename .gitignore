@@ -14,3 +14,15 @@ checkpointv2.pth.tar
 checkpoint2.pth.tar
 yolov3.weights
 YOLOV3_MSCOCO_Orignal.pth.tar
+
+project.fls
+project.log
+
+project.aux
+project.bbl
+project.fls
+project.fdb_latexmk
+project.blg
+cvpr_eso.sty
+
+project.pdf
