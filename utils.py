@@ -541,6 +541,10 @@ def convert_YOLO_pred_to_orignal_format (preds_yolo_format):
         ...
     }
     """
+    # known height and width of kitti images
+    image_height = 185
+    image_width = 306
+
     result = defaultdict(lambda: {"classes": [], "scores": [], "boxes": []})
 
     # Iterate through the predictions array of shape (predicted boxes, 07)
@@ -555,10 +559,12 @@ def convert_YOLO_pred_to_orignal_format (preds_yolo_format):
         xmax = y_centre + height / 2
         ymax = x_centre + width / 2
 
+        185, 306,
+
         # Store the results in a dictionary at index image_idx of a list
         result[int(image_idx)]["classes"].append(int(class_idx))
         result[int(image_idx)]["scores"].append(float(objectness))
-        result[int(image_idx)]["boxes"].append([xmin, ymin, xmax, ymax])
+        result[int(image_idx)]["boxes"].append(np.array([xmin*image_height, ymin*image_width, xmax*image_height, ymax*image_width], dtype=np.float64))
 
     # This converts defaultdict to a regular dict and list in image order. 
     # This assumes that images can be in wrong orders in predictions 
