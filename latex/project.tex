@@ -54,18 +54,25 @@ Another challenge is that these detections must be performed at high precision a
 
 In this project, we focus only on detecting cars. Car detection is specially important in autonomous driving to avoid collisions and plan safe trajectories even at low levels of autonomy.
 
-There are many deep learning based approaches for object detection. We adapt YOLO-v3 \cite{redmon2018yolov3}, a general purpose 2D object detector based on a Convolutional Neural Network (CNN) architecture. For training and evaluating our car detector, we will use a simplified version of KITTI dataset containing cars with 2D bounding box labels. \cite{KITTI}
+There are many deep learning based approaches for object detection. We adapt YOLO-v3 \cite{redmon2018yolov3}, a general purpose 2D object detector based on a Convolutional Neural Network (CNN) architecture. For training and evaluating our car detector, we will use a simplified version of KITTI dataset containing cars with 2D bounding box labels \cite{KITTI}.
 
 YOLO-v3 is an improved version of YOLO \cite{redmon2016yolov1} which achieves 
-higher mean Average Precision (mAP) on 2D object detection datasets like MS-COCO \cite{mscoco}, while still being real-time.  
+higher mean Average Precision (mAP) on 2D object detection datasets like MS-COCO \cite{mscoco} while still being real-time. YOLO-v3 is a end to end CNN and performs predictions in only 1 pass.  
 
 Transfer learning is then used to finetune it for car detection on our version of KITTI dataset. We obtained 50 percent mean Average Precision (mAP) on a validation set.
 %-------------------------------------------------------------------------
 \section{Related Work}
 Since the success of Convolutional Neural Network (CNN) based approaches like Alexnet \cite{Alexnet} on image classification tasks, many similar approaches have been designed for object detection. Region Proposal CNNs (RCNN) \cite{ren2015faster} and its various variants use handcrafted algorithms to generate proposals for regions of interest. These proposals are then passed to a CNN which produces class and confidence predictions. The predictions are then fed back into the region proposal algorithm. This means that multiple passes are required to perform good predictions. This makes these networks slow at inference time. These multi-stage detectors are, therefore, not realtime. 
-YOLO architecture \cite{redmon2016yolov1} and Single Shot Detector \cite{SSD_v1} solved this problem by performing the object detection in only one evaluation of the network. These are end to end CNNs. Out of these two, YOLO is the fastest. YOLO v3 \cite{redmon2018yolov3} is an improvement to the original YOLO architecture. YOLO architecture frames the object detection problem as a regression problem. It divides the image into a SxS grid, where S is the grid size. For each of these grid cells, there are three bounding box predictors in the output layer. A bounding box prediction consists of 4 coordinates of the bounding box. Each grid cell also includes a class prediction. YOLO-v3 also divides the images into SxS cell, but it produces class probabilities for each bounding box not just for each grid cell. Predictions are also made at three different scales. Prediction of the bounding box coordinates are also as offsets of bounding box priors. Since, many predictions are made for each object, Non Maximum Suppression (NMS) is applied to keep only the best predictions. A brief comparison of the performance of many object detection frameworks in shown in \ref{fig:detector_comparison}.
 
-There are more recent and improved versions of YOLO such as \cite{yolov7} that are not developed by the orignal authors. Recent works like Detection Transformer \cite{DETR} use a CNN backbone with a transformer encoder and decode blocks. These approaches acheive higher mAP precision. They also remove the need for anchor boxes and NMS. Because of the limits of the dataset, limited time and GPU compute, we use the YOLOv3 architecture and not the newer ones.
+YOLO architecture and Single Shot Detector \cite{SSD_v1} solved this problem by performing the object detection in only one evaluation of the network. These are end to end CNNs. Out of these two, YOLO is the fastest. 
+
+YOLO architecture frames the object detection problem as a regression problem. It divides the image into a SxS grid, where S is the grid size. For each of these grid cells, there are three bounding box predictors in the output layer. A bounding box prediction consists of 4 coordinates of the bounding box. Each grid cell also includes a class prediction. 
+
+YOLO-v3 also divides the images into SxS cell, but it produces class probabilities for each bounding box not just for each grid cell. Predictions are also made at three different scales. Prediction of the bounding box coordinates are also as offsets of bounding box priors (anchor boxes). These anchor boxes are based on shapes of bounding boxes common for the problem. The network outputs a large number of predictions. Bounding box and class predictions are made at 3 scales, SxS grid cells per scale, and 3 per grid cells. Non Maximum Suppression (NMS) is applied to keep only the best predictions. YOLO-v3 has already been applied to many object detection problems like face detection \cite{face_detection_yolo}, predestrian detection \cite{pedestrian_detection} and much more.
+
+A brief comparison of the performance of many object detection frameworks in shown in Figure \ref {fig:detector_comparison}.
+
+There are more recent and improved versions of YOLO such as \cite{yolov7} that are not developed by the original authors. Recent works like Detection Transformer \cite{DETR} use a CNN backbone with a transformer encoder and decode blocks. These approaches acheive higher mAP precision. They also remove the need for anchor boxes and NMS. Because of the limits of the dataset, limited time and GPU compute, we use the YOLOv3 architecture and not the newer ones.
 
 \begin{figure}[t]
 	\begin{center}
@@ -76,25 +83,15 @@ There are more recent and improved versions of YOLO such as \cite{yolov7} that a
 	\label{fig:detector_comparison}
 \end{figure}
 
-
-They acheived this by dividing the image into a SxS grid of "predictors". Each predictor is responsible for generating predictions for an object, if the centre of the object bounding box lies in within the grid cell. The predictor generates a class probabilities, objectness confidence, \
-and 4 bounding box coordinates. 
-
+ 
 
 \section{Method}
-In this section, you should describe the method you used to solve the problem in detail. Figures can help to explain the used method. An example how to insert a figure is given in Figure \ref{fig:long}. \\
+They acheived this by dividing the image into a SxS grid of "predictors". Each predictor is responsible for generating predictions for an object, if the centre of the object bounding box lies in within the grid cell. The predictor generates a class probabilities, objectness confidence,
+and 4 bounding box coordinates.
+
 Also, formulas often help to make the mathematical background clearer. How to insert them is given here: 
 $$a + b + a = 2 \cdot a + b\,.$$
 It is essential that the reader is able to understand your method according to this section.
-
-% \begin{figure}[t]
-% 	\begin{center}
-% 		%\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
-% 		\includegraphics[width=1.0\linewidth]{AI-comic-funny.jpg}
-% 	\end{center}
-% 	\caption{Overview of method/ Network structure}
-% 	\label{fig:long}
-% \end{figure}
 
 \section{Evaluation}
 \subsection{Experimental Setup}
