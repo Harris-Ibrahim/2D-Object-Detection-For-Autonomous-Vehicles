@@ -59,6 +59,15 @@ There are many deep learning based approaches for object detection. We adapt YOL
 YOLO-v3 is an improved version of YOLO \cite{redmon2016yolov1} which achieves 
 higher mean Average Precision (mAP) on 2D object detection datasets like MS-COCO \cite{mscoco} while still being real-time. YOLO-v3 is a end to end CNN and performs predictions in only 1 pass.  
 
+\begin{figure}[t]
+	\begin{center}
+		%\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
+		\includegraphics[width=1.0\linewidth]{figure30.png}
+	\end{center}
+	\caption{Detections of the model developed in this project on a sample image from the test set.}
+	\label{fig:pred_example_plot}
+\end{figure}
+
 Transfer learning is then used to finetune it for car detection on our version of KITTI dataset. We obtained 50 percent mean Average Precision (mAP) on a validation set.
 %-------------------------------------------------------------------------
 \section{Related Work}
@@ -79,13 +88,67 @@ There are more recent and improved versions of YOLO such as \cite{yolov7} that a
 		%\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
 		\includegraphics[width=1.0\linewidth]{object_detector_comparisons.png}
 	\end{center}
-	\caption{speed (ms) vs accuracy (AP) on MS. COCO test set. YOLOv3 outforms many multstage and single stage object detectors in AP while being faster than all of them. This image is adapted from \cite{redmon2018yolov3} which is itself a version of image from \cite{retinaNet}}
+	\caption{speed (ms) vs accuracy (AP) on MS. COCO test set. YOLOv3 outperforms many multistage and single stage object detectors in AP while being faster than all of them. This image is adapted from \cite{redmon2018yolov3} which is itself a version of image from \cite{retinaNet}}
 	\label{fig:detector_comparison}
 \end{figure}
 
- 
-
 \section{Method}
+In this section, we provide a summary of the YOLO-v3 architecture.
+\subsection{Bounding Boxes}
+YOLO-v3 like many other object detectors does not predict the absolute coordinates of the bounding box. The bounding box centre coordinates are predicted as offsets to position of the top left corner of the grid cell. The width and height of the box are predicted as offset of the width and height of anchor boxes. These anchor boxes are pre-defined based on the likely shapes of anchor boxes for the problem at hand. The bounding box offsets are $t_x$, $t_y$, $t_w$, $t_h$. If the position of the top left of grid cell relative to the top left of the image is given by $(c_x, c_y)$ and the bounding box has width and height $p_w$, $p_h$, then the bounding box coordinates are calculated by: 
+\begin{align*}
+b_x &= \sigma(t_x) + c_x \\
+b_y &= \sigma(t_y)  + c_y\\
+b_w &= p_w e^{t_w}\\
+b_h &= p_h e^{t_h}\\
+\end{align*}
+The ground truth values will be the left side of the above eqautions. We rearrange the equations to find the ground truth offsets.
+
+The authors used clustering analysis to find the anchor box dimensions which have the most overlap with ground truth boxes on MS COCO dataset. We did not do such analysis on our dataset and used the anchor box dimensions reported in the orignal paper.
+
+There are 09 anchors boxes---03 at each scale. Each grid cells within a scale, predicts three bounding boxes as offsets of these anchors boxes. The anchor boxes are in sets of three where the size of each set is according to the prediction scale.
+
+\subsection{Objectness score}
+Along with 04 coordinates of the bounding box, the network also predicts a objectness score for the bounding box. At test time, this is the confidence of the model in predicting that an object exists in the box and how well the box fits the object. At training time, this score should be the interesection over union between the predicted box and the ground truth box. The loss function forces this behaviour.
+
+\subsection{Class predictions}
+The network predicts a class probability for each bounding box. At training time, we use Cross entropy loss for classification prediction of the box. This is probality that there exists an object of class i given that there is an object in the box, $\Pr(\textrm{Class}_i | \textrm{Object})$. We can multiply this by objectness score to get the classification confidence.
+
+\subsection{Features extraction backbone}
+The backbone of the network is a 53 layer CNN named as Darknet 53. The overall summary of the layers is shown in Table \ref{network_architecture}. The authors did not explain any further details about the backbone. After spending sometime with the source code, our understanding is that each CNN block in the Table consists of a CNN layer, followed by leaky ReLU activation layer, and lastly a Batch Normalization layer. The filter sizes are mentioned in the Table. The 1x, 2x and such labels in the Table show the number of repeats. So, 2x means that such a block is repeated 2 times. It should be noted that the architecture includes skip connections like Resnets \cite{Resnets}. The authors trained this backbone for image classification on ImageNet dataset \cite{imagenet_dataset}. Further details about the training process is were not provided. We assume a strategy similar to the YOLO-v1 was used.
+
+\subsection{Three Scale Predictions}
+The extracted features of the backbone are then passed to the detection heads at three different scales. The size of the outputs are decided by dividing the image into SxS grid. There are three different grid sizes for three different scales. The idea is to use a coarses grid to help detect large object, then a medium size grid and then finally a smaller grid size. At each scale, the network has SxS predictors. Each grid cell has three predictors. Each predictor then predicts 4 bounding box coordinates (as offsets to three anchors), 1 objectness score and C class probabilities for C classes. So the total predictions at each scale are $S\times S\times [3*(4+1+C)]$. 
+After the output of the feature extract backbone, several convolutional layers are added. The overall structure can be seen in Figure \ref{fig:detection_head}
+The detection head for the first scale then adds two more Convolutional blocks. The outputs of this blocks is a $S\times S\times [3*(4+1+C)]$ tensor. 
+For the second scale prediction, we take the output of the network just where the first detection head is attached and then upscale it by $2x$. We then concatenate this feature map with a feature map a couple of blocks before. The idea is to use earlier feature maps along with upscaled current feature maps to make predictions on a higher resolution. This helps with detecting medium and small objects. The second detection head is then attached here which then adds two more CNN blocks to make predictions. The process is repeated to get predictions for the third scale. 
+
+
+\begin{figure}[t]
+	\begin{center}
+		%\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
+		\includegraphics[width=1.0\linewidth]{detection_heads.png}
+	\end{center}
+	\caption{speed (ms) vs accuracy (AP) on MS. COCO test set. YOLOv3 outperforms many multistage and single stage object detectors in AP while being faster than all of them. This image is adapted from \cite{redmon2018yolov3} which is itself a version of image from \cite{retinaNet}}
+	\label{fig:detection_head}
+\end{figure}
+
+
+\begin{table}[h] 
+\begin{center}
+\includegraphics[width=.8\linewidth]{arch2.pdf}
+\end{center}
+\caption{\small \textbf{Darknet-53.}}
+\label{network_architecture}
+\end{table}
+
+The network makes predictions at three different scales inspired by feature pyramid networksstage of the network
+
+
+YOLO-v3 predicts 04 bounding box coordinates. These are the x and y coordinates for the centre of the box and width and height of the bounding box. The centre is predicted relative to the bounds of the grid cell edge. The equation for the bounding box look like:
+
+On the left side are the absolute
+
 They acheived this by dividing the image into a SxS grid of "predictors". Each predictor is responsible for generating predictions for an object, if the centre of the object bounding box lies in within the grid cell. The predictor generates a class probabilities, objectness confidence,
 and 4 bounding box coordinates.
 

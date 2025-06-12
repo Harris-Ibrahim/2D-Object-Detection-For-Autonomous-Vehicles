@@ -7,11 +7,23 @@ Nicolas Carion, Francisco Massa, Gabriel Synnaeve, Nicolas Usunier, Alexander
 \newblock In {\em European conference on computer vision}, pages 213--229.
   Springer, 2020.
 
+\bibitem{imagenet_dataset}
+Jia Deng, Wei Dong, Richard Socher, Li-Jia Li, Kai Li, and Li Fei-Fei.
+\newblock Imagenet: A large-scale hierarchical image database.
+\newblock In {\em 2009 IEEE Conference on Computer Vision and Pattern
+  Recognition}, pages 248--255, 2009.
+
 \bibitem{KITTI}
 A Geiger, P Lenz, C Stiller, and R Urtasun.
 \newblock Vision meets robotics: The kitti dataset.
 \newblock {\em The International Journal of Robotics Research},
   32(11):1231--1237, 2013.
+
+\bibitem{Resnets}
+Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun.
+\newblock Deep residual learning for image recognition.
+\newblock In {\em Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pages 770--778, 2016.
 
 \bibitem{Alexnet}
 Alex Krizhevsky, Ilya Sutskever, and Geoffrey~E Hinton.
