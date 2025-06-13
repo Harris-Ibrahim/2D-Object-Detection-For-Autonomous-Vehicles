@@ -21,7 +21,7 @@
 
 % Pages are numbered in submission mode, and unnumbered in camera-ready
 %\ifcvprfinal\pagestyle{empty}\fi
-\setcounter{page}{4321}
+\setcounter{page}{1}
 \begin{document}
 
 %%%%%%%%% TITLE
@@ -175,7 +175,7 @@ Beyond the accuracy metric, we observed that our model has some trouble properly
 
 First, we used the anchor boxes suitable for MS COCO. Our dataset has only rectangular objects. Using anchor boxes well suited for cars should improve mAP. 
 
-Second, our training procedure should be optimized. Hyperparameter optimization in terms of learning rate schedules, how many layers to unfreeze, and loss weights can be done with more time and GPU compute at hand (which we did not have). Some sample predictions of the model on test set can be seen in \ref{fig:pred_example_plot} and \ref{fig:pred_example_plot2}. We observed that sometimes the model confused motorists, trains and trucks with cars. We think that this can be improved by including labels for those classes as well. Finally, we think that training on a larger, more diverse dataset with higher resolution images should improve car detection for practical applications.
+Second, our training procedure should be optimized. Hyperparameter optimization in terms of learning rate schedules, how many layers to unfreeze, and loss weights can be done with more time and GPU compute at hand (which we did not have). Some sample predictions of the model on test set can be seen in Figure \ref{fig:pred_example_plot} and Figure \ref{fig:pred_example_plot2}. We observed that sometimes the model confused motorists, trains and trucks with cars. We think that this can be improved by including labels for those classes as well. Finally, we think that training on a larger, more diverse dataset with higher resolution images should improve car detection for practical applications.
 
 \begin{figure}[t]
 	\begin{center}
@@ -204,6 +204,9 @@ Second, our training procedure should be optimized. Hyperparameter optimization 
 
 \section{Conclusion and Future Work}
 We adapted YOLO-v3 2D object detector to perform car detection on a scaled down version of KITTI dataset. We acheived a mAP of 51 percent. Hyperparameter optimization is required in terms of finetuning the pretrained model on our dataset. Clustering analysis can be done to find better anchor boxes. These measures should improve performance. In future, newer object detection frameworks based on Detection Transformer should be investigated. We learned about 2D object detection by doing this project and coded many things from scratch.
+\section{Acknowledgments}
+We adapted a Pytorch implementation of YOLO-v3 by \cite{yolov3pytorch2022}.
+
 %-------------------------------------------------------------------------
 
 {\small

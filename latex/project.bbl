@@ -1,5 +1,11 @@
 \begin{thebibliography}{10}\itemsep=-1pt
 
+\bibitem{yolov3pytorch2022}
+Sana~Persson Aladin~Persson.
+\newblock {YOLOv3-PyTorch}.
+\newblock \url{https://github.com/SannaPersson/YOLOv3-PyTorch}, 2022.
+\newblock Accessed: 2025-06-12.
+
 \bibitem{DETR}
 Nicolas Carion, Francisco Massa, Gabriel Synnaeve, Nicolas Usunier, Alexander
   Kirillov, and Sergey Zagoruyko.
