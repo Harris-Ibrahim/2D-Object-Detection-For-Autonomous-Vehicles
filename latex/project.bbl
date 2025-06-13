@@ -38,6 +38,13 @@ Lin, Li Zheng-Chun, Jiang Dian, Wang Yun-Zhi, Chao Jing, and Zhang.
 \newblock In {\em International Journal of Computational Intelligence System},
   pages 1153--1160. Press, 2020.
 
+\bibitem{Feature_pyramids}
+Tsung-Yi Lin, Piotr Doll{\'a}r, Ross Girshick, Kaiming He, Bharath Hariharan,
+  and Serge Belongie.
+\newblock Feature pyramid networks for object detection.
+\newblock In {\em Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pages 2117--2125, 2017.
+
 \bibitem{retinaNet}
 Tsung-Yi Lin, Priya Goyal, Ross Girshick, Kaiming He, and Piotr Doll{\'a}r.
 \newblock Focal loss for dense object detection.
